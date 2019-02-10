@@ -12,8 +12,8 @@
             "command": "make",
             "type": "shell",
             "args": [
-                //"-j",
-                //"4",
+                "-j",
+                "4",
                 "app"
             ],
             "presentation": {

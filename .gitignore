@@ -14,3 +14,6 @@ bootloader/
 ldgen.section_infos
 mconf-idf-prefix/
 CMakeFiles
+Makefile
+*.map
+dummy_main_src.c

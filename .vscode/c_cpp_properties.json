@@ -21,7 +21,8 @@
                     "$HOME/dev/espressif/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/8.2.0/include-fixed",
                     "$HOME/dev/espressif/xtensa-esp32-elf/xtensa-esp32-elf/include",
                     "$HOME/dev/espressif/xtensa-esp32-elf/xtensa-esp32-elf/sysroot/usr/include",
-                    "$HOME/dev/espressif/esp-idf/components"
+                    "$HOME/dev/espressif/esp-idf/components",
+                    "/Users/romanvg/dev/espressif/esp-idf/components/esp32/include/"
                 ]
             },
             "defines": [],

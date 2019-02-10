@@ -9,6 +9,11 @@
 
 struct usb_internal_state_struct usb_internal_state __attribute__((aligned(4)));
 
+#define GPIO_OUTPUT_IO_0    18
+#define GPIO_OUTPUT_IO_1    19
+#define GPIO_OUTPUT_PIN_SEL  ((1ULL<<GPIO_OUTPUT_IO_0) | (1ULL<<GPIO_OUTPUT_IO_1))
+#define ESP_INTR_FLAG_DEFAULT 0
+
 #define ENDPOINT0_SIZE 8 //Fixed for USB 1.1, Low Speed.
 
 #define INSTANCE_DESCRIPTORS
@@ -227,31 +232,37 @@ void usb_pid_handle_ack( uint32_t this_token, struct usb_internal_state_struct *
 
 void usb_init()
 {
-    gpio_intr_disable(DPLUS); //Close the GPIO interrupt
-    gpio_intr_disable(DMINUS); //Close the GPIO interrupt
-
-	PIN_FUNC_SELECT(PERIPHSDPLUS,FUNCDPLUS); //D- (needs pullup)
-	PIN_FUNC_SELECT(PERIPHSDMINUS,FUNCDMINUS); //D+
-
-    //PIN_DIR_INPUT = _BV(DMINUS)|_BV(DPLUS);
-    gpio_pullup_en(PERIPHSDMINUS);
-    gpio_pullup_dis(PERIPHSDPLUS);
-
-    //change gpio intrrupt type for one pin
-    gpio_set_intr_type(PERIPHSDMINUS, GPIO_INTR_POSEDGE);
+	// Configure DMINUS GPIO PIN
+	gpio_config_t io_conf;
+    io_conf.intr_type = GPIO_PIN_INTR_DISABLE; 		//disable interrupt
+    io_conf.mode = GPIO_MODE_INPUT_OUTPUT;
+    io_conf.pin_bit_mask = GPIO_OUTPUT_PIN_SEL;	    //XXX
+	io_conf.pull_down_en = 0;						//disable pull-down mode
+    io_conf.pull_up_en = 1;    						//enable pull-up mode
+    gpio_config(&io_conf);
 
 
-    // GPIO_REG_WRITE(GPIO_STATUS_W1TC_ADDRESS, BIT(0));
-    gpio_install_isr_service(0); // ESP_INTR_DEFAULT
-    gpio_isr_handler_add(DMINUS, gpio_intr, (void*) PERIPHSDMINUS);                                //Attach the gpio interrupt.
-   // gpio_pin_intr_state_set(GPIO_ID_PIN(DPLUS),GPIO_PIN_INTR_POSEDGE);  //Rising Edge Trigger.
+	// Configure DPLUS GPIO PIN
+    io_conf.intr_type = GPIO_PIN_INTR_POSEDGE;
+    io_conf.pin_bit_mask = GPIO_OUTPUT_PIN_SEL;		//XXX
+    io_conf.mode = GPIO_MODE_INPUT_OUTPUT;
+    io_conf.pull_up_en = 0;
+    gpio_config(&io_conf);
 
-	//Forcibly disconnect from bus.
-	// volatile uint32_t * gp = (volatile uint32_t*)GPIO_BASE_REG;
-	// gp[GPIO_OFFSET_CLEAR/4] = _BV(DPLUS) | _BV(DMINUS);
-	// gp[GPIO_OFFSET_DIR_OUT/4] = _BV(DPLUS) | _BV(DMINUS);
-	// ets_delay_us( 10000 );
-	// gp[GPIO_OFFSET_DIR_IN/4] = _BV(DPLUS) | _BV(DMINUS);
+	// Disable interrupts for both pins
+    gpio_intr_disable(DPLUS);
+    gpio_intr_disable(DMINUS);
+
+	PIN_FUNC_SELECT(PERIPHSDPLUS, FUNCDPLUS); 		//D-
+	PIN_FUNC_SELECT(PERIPHSDMINUS, FUNCDMINUS); 	//D+
+
+    //change gpio interrupt type for one pin
+
+    gpio_install_isr_service(0);
+    gpio_isr_handler_add(DPLUS, gpio_intr, (void*) PERIPHSDPLUS);                                //Attach the gpio interrupt.
+    gpio_set_intr_type(PERIPHSDPLUS, GPIO_INTR_POSEDGE);
+
+	//XXX: espusb: Forcibly disconnect from bus... is this needed?
 
     gpio_intr_enable(DPLUS);
     gpio_intr_enable(DMINUS);
