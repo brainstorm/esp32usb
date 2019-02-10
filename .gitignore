@@ -1,4 +1,16 @@
 build/
+esp-idf/
 sdkconfig
 sdkconfig.old
 CMakeCache.txt
+*.log
+*.bin
+*.elf
+*_args
+*.cmake
+*.json
+config/
+bootloader/
+ldgen.section_infos
+mconf-idf-prefix/
+CMakeFiles

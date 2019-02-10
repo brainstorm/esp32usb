@@ -81,7 +81,7 @@ void usb_pid_handle_sof( uint32_t this_token, struct usb_internal_state_struct *
 void usb_pid_handle_in( uint32_t this_token, struct usb_internal_state_struct * ist );
 void usb_pid_handle_out( uint32_t this_token, struct usb_internal_state_struct * ist );
 void usb_pid_handle_data( uint32_t this_token, struct usb_internal_state_struct * ist, uint32_t which_data );
-extern void usb_pid_handle_ack( uint32_t this_token, struct usb_internal_state_struct * ist );
+void usb_pid_handle_ack( uint32_t this_token, struct usb_internal_state_struct * ist );
 
 extern uint32_t usb_reinstate;
 

@@ -1,11 +1,6 @@
-ESP-IDF template app
-====================
+ESPUSB port for the ESP32 (WIP, NOT WORKING YET)
+================================================
 
-This is a template application to be used with [Espressif IoT Development Framework](https://github.com/espressif/esp-idf).
+This is an attempt to incrementally port the [espusb codebase](https://github.com/cnlohr/espusb) to the esp32 via esp-idf-template.
 
-Please check [ESP-IDF docs](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for getting started instructions.
-
-*Code in this repository is in the Public Domain (or CC0 licensed, at your option.)
-Unless required by applicable law or agreed to in writing, this
-software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-CONDITIONS OF ANY KIND, either express or implied.*
+At the moment of writing this it's purely exploratory, don't expect it to compile nor work at all... for now.
